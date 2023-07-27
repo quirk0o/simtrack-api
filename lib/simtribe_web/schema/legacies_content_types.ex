@@ -1,5 +1,8 @@
 defmodule SimTribeWeb.Schema.LegaciesContentTypes do
   use Absinthe.Schema.Notation
+  import Absinthe.Resolution.Helpers, only: [dataloader: 1]
+
+  alias SimTribe.Legacies.Sim
 
   enum :gender do
     value :female
@@ -12,5 +15,7 @@ defmodule SimTribeWeb.Schema.LegaciesContentTypes do
     field :last_name, :string
     field :gender, :gender
     field :avatar_url, :string
+
+    field :spouse, :sim, resolve: dataloader(Sim)
   end
 end

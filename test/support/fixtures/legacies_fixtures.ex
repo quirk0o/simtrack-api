@@ -11,8 +11,8 @@ defmodule SimTribe.LegaciesFixtures do
     {:ok, sim} =
       attrs
       |> Enum.into(%{
-        first_name: "some first_name",
-        last_name: "some last_name",
+        first_name: "Eliza",
+        last_name: "Pancakes",
         gender: :female,
         avatar_url: "http://example.com/avatar.png"
       })

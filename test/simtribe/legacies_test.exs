@@ -21,11 +21,11 @@ defmodule SimTribe.LegaciesTest do
     end
 
     test "create_sim/1 with valid data creates a sim" do
-      valid_attrs = %{first_name: "some first_name", last_name: "some last_name", gender: :female, avatar_url: "http://example.com/avatar.png"}
+      valid_attrs = %{first_name: "Eliza", last_name: "Pancakes", gender: :female, avatar_url: "http://example.com/avatar.png"}
 
       assert {:ok, %Sim{} = sim} = Legacies.create_sim(valid_attrs)
-      assert sim.first_name == "some first_name"
-      assert sim.last_name == "some last_name"
+      assert sim.first_name == "Eliza"
+      assert sim.last_name == "Pancakes"
       assert sim.gender == :female
       assert sim.avatar_url == "http://example.com/avatar.png"
     end
@@ -36,11 +36,11 @@ defmodule SimTribe.LegaciesTest do
 
     test "update_sim/2 with valid data updates the sim" do
       sim = sim_fixture()
-      update_attrs = %{first_name: "some updated first_name", last_name: "some updated last_name", gender: :male, avatar_url: "http://example.com/new_avatar.png"}
+      update_attrs = %{first_name: "Elizabeth", last_name: "Scott", gender: :male, avatar_url: "http://example.com/new_avatar.png"}
 
       assert {:ok, %Sim{} = sim} = Legacies.update_sim(sim, update_attrs)
-      assert sim.first_name == "some updated first_name"
-      assert sim.last_name == "some updated last_name"
+      assert sim.first_name == "Elizabeth"
+      assert sim.last_name == "Scott"
       assert sim.gender == :male
       assert sim.avatar_url == "http://example.com/new_avatar.png"
     end
@@ -49,6 +49,21 @@ defmodule SimTribe.LegaciesTest do
       sim = sim_fixture()
       assert {:error, %Ecto.Changeset{}} = Legacies.update_sim(sim, @invalid_attrs)
       assert sim == Legacies.get_sim!(sim.id)
+    end
+
+    test "update_sim_spouse/2 updates the sim's spouse" do
+      sim = sim_fixture()
+      spouse = sim_fixture(%{first_name: "Bob", last_name: "Pancakes", gender: :male})
+      assert {:ok, %Sim{} = sim} = Legacies.update_sim_spouse(sim, spouse)
+      assert sim.spouse == spouse
+    end
+
+    test "update_spouses/2 updates both spouses" do
+      sim = sim_fixture()
+      spouse = sim_fixture(%{first_name: "Bob", last_name: "Pancakes", gender: :male})
+      assert {:ok, %Sim{} = sim, %Sim{} = spouse} = Legacies.update_spouses(sim, spouse)
+      assert sim.spouse_id == spouse.id
+      assert spouse.spouse_id == sim.id
     end
 
     test "delete_sim/1 deletes the sim" do

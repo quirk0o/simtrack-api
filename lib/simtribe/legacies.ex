@@ -8,6 +8,10 @@ defmodule SimTribe.Legacies do
 
   alias SimTribe.Legacies.Sim
 
+  def sims_data() do
+    Dataloader.Ecto.new(Repo, query: fn queryable, _ -> queryable end)
+  end
+
   @doc """
   Returns the list of sims.
 
@@ -71,6 +75,23 @@ defmodule SimTribe.Legacies do
     sim
     |> Sim.changeset(attrs)
     |> Repo.update()
+  end
+
+  def update_sim_spouse(%Sim{} = sim, spouse) do
+    sim
+    |> Repo.preload(:spouse)
+    |> Sim.spouse_changeset(spouse)
+    |> Repo.update()
+  end
+
+  def update_spouses(%Sim{} = sim1, %Sim{} = sim2) do
+    with {:ok, sim1} <- update_sim_spouse(sim1, sim2),
+         {:ok, sim2} <- update_sim_spouse(sim2, sim1) do
+      {:ok, sim1, sim2}
+    else
+      {:error, changeset} ->
+        {:error, changeset}
+    end
   end
 
   @doc """
