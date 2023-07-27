@@ -15,7 +15,6 @@ defmodule SimTribeWeb.Router do
 
   pipeline :api do
     plug :accepts, ["json"]
-    plug :fetch_current_user
   end
 
   scope "/", SimTribeWeb do
@@ -25,9 +24,11 @@ defmodule SimTribeWeb.Router do
   end
 
   # Other scopes may use custom stacks.
-  # scope "/api", SimTribeWeb do
-  #   pipe_through :api
-  # end
+  scope "/api" do
+    pipe_through :api
+
+    forward "/graphql", Absinthe.Plug, schema: SimTribeWeb.Schema
+  end
 
   # Enable LiveDashboard and Swoosh mailbox preview in development
   if Application.compile_env(:simtribe, :dev_routes) do
@@ -43,6 +44,10 @@ defmodule SimTribeWeb.Router do
 
       live_dashboard "/dashboard", metrics: SimTribeWeb.Telemetry
       forward "/mailbox", Plug.Swoosh.MailboxPreview
+      forward "/graphiql", Absinthe.Plug.GraphiQL,
+        schema: SimTribeWeb.Schema,
+        interface: :playground,
+        default_url: "/api/graphql"
     end
   end
 
