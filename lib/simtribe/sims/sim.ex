@@ -1,4 +1,4 @@
-defmodule SimTribe.Legacies.Sim do
+defmodule SimTribe.Sims.Sim do
   use Ecto.Schema
   import Ecto.Changeset
 

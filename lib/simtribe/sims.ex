@@ -1,12 +1,12 @@
-defmodule SimTribe.Legacies do
+defmodule SimTribe.Sims do
   @moduledoc """
-  The Legacies context.
+  The Sims context.
   """
 
   import Ecto.Query, warn: false
   alias SimTribe.Repo
 
-  alias SimTribe.Legacies.Sim
+  alias SimTribe.Sims.Sim
 
   def sims_data() do
     Dataloader.Ecto.new(Repo, query: fn queryable, _ -> queryable end)

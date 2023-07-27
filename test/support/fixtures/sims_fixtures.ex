@@ -1,7 +1,7 @@
-defmodule SimTribe.LegaciesFixtures do
+defmodule SimTribe.SimsFixtures do
   @moduledoc """
   This module defines test helpers for creating
-  entities via the `SimTribe.Legacies` context.
+  entities via the `SimTribe.Sims` context.
   """
 
   @doc """
@@ -16,7 +16,7 @@ defmodule SimTribe.LegaciesFixtures do
         gender: :female,
         avatar_url: "http://example.com/avatar.png"
       })
-      |> SimTribe.Legacies.create_sim()
+      |> SimTribe.Sims.create_sim()
 
     sim
   end

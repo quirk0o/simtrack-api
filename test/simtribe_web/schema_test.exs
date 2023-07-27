@@ -1,8 +1,8 @@
 defmodule SimtribeWeb.SchemaTest do
   use SimTribeWeb.ConnCase
 
-  alias SimTribe.Legacies
-  import SimTribe.LegaciesFixtures
+  alias SimTribe.Sims
+  import SimTribe.SimsFixtures
 
   @query """
   query getSims {
@@ -26,8 +26,8 @@ defmodule SimtribeWeb.SchemaTest do
   test "query: sims", %{conn: conn} do
     parent1 = sim_fixture(%{first_name: "Eliza", last_name: "Pancakes", gender: :female})
     parent2 = sim_fixture(%{first_name: "Bob", last_name: "Pancakes", gender: :male})
-    {:ok, _, _} = Legacies.update_spouses(parent1, parent2)
-    {:ok, _} = Legacies.create_child_sim(parent1, parent2, %{first_name: "Iggy", gender: :male})
+    {:ok, _, _} = Sims.update_spouses(parent1, parent2)
+    {:ok, _} = Sims.create_child_sim(parent1, parent2, %{first_name: "Iggy", gender: :male})
 
     conn =
       post(conn, "/api/graphql", %{
