@@ -34,6 +34,17 @@ defmodule SimTribe.LegaciesTest do
       assert {:error, %Ecto.Changeset{}} = Legacies.create_sim(@invalid_attrs)
     end
 
+    test "create_child/2 with valid data creates a child sim" do
+      parent1 = sim_fixture(last_name: "Pancakes")
+      parent2 = sim_fixture(first_name: "Bob")
+      valid_attrs = %{first_name: "Iggy", gender: :female}
+
+      assert {:ok, %Sim{} = child} = Legacies.create_child_sim(parent1, parent2, valid_attrs)
+      assert child.first_name == "Iggy"
+      assert child.last_name == "Pancakes"
+      assert child.gender == :female
+    end
+
     test "update_sim/2 with valid data updates the sim" do
       sim = sim_fixture()
       update_attrs = %{first_name: "Elizabeth", last_name: "Scott", gender: :male, avatar_url: "http://example.com/new_avatar.png"}

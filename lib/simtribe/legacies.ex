@@ -41,6 +41,15 @@ defmodule SimTribe.Legacies do
   """
   def get_sim!(id), do: Repo.get!(Sim, id)
 
+  def find_sim_by_name(first_name, last_name) do
+    query =
+      from s in Sim,
+        where: s.first_name == ^first_name and s.last_name == ^last_name,
+        select: s
+
+    Repo.one(query)
+  end
+
   @doc """
   Creates a sim.
 
@@ -56,6 +65,14 @@ defmodule SimTribe.Legacies do
   def create_sim(attrs \\ %{}) do
     %Sim{}
     |> Sim.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  def create_child_sim(parent1, parent2, attrs \\ %{}) do
+    child_attrs = Map.merge(%{last_name: parent1.last_name}, attrs)
+    %Sim{}
+    |> Sim.changeset(child_attrs)
+    |> Sim.parent_changeset(parent1, parent2)
     |> Repo.insert()
   end
 
