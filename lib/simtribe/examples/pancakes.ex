@@ -6,7 +6,8 @@ defmodule SimTribe.Examples.Pancakes do
       first_name: "Eliza",
       last_name: "Pancakes",
       traits: ["Materialistic", "Neat", "Perfectionist"],
-      gender: :female
+      gender: :female,
+      age: :young_adult
     }
   end
 
@@ -15,7 +16,8 @@ defmodule SimTribe.Examples.Pancakes do
       first_name: "Bob",
       last_name: "Pancakes",
       traits: ["Slob", "Gloomy", "Loner"],
-      gender: :male
+      gender: :male,
+      age: :young_adult
     }
   end
 
@@ -24,7 +26,8 @@ defmodule SimTribe.Examples.Pancakes do
       first_name: "Iggy",
       last_name: "Pancakes",
       traits: ["Charmer"],
-      gender: :male
+      gender: :male,
+      age: :toddler
     }
   end
 

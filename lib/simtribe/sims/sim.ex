@@ -8,11 +8,13 @@ defmodule SimTribe.Sims.Sim do
 
   @required_attrs ~w(first_name last_name gender)a
   @genders ~w(female male)a
+  @ages ~w(infant toddler child teen young_adult adult elder)a
 
   schema "sims" do
     field :first_name, :string
     field :last_name, :string
     field :gender, Ecto.Enum, values: @genders
+    field :age, Ecto.Enum, values: @ages, default: :young_adult
     field :avatar_url, :string
 
     many_to_many :traits, Trait, join_through: SimTrait, on_replace: :delete
@@ -31,6 +33,7 @@ defmodule SimTribe.Sims.Sim do
       :first_name,
       :last_name,
       :gender,
+      :age,
       :avatar_url,
       :spouse_id,
       :parent1_id,
@@ -38,6 +41,7 @@ defmodule SimTribe.Sims.Sim do
     ])
     |> validate_required(@required_attrs)
     |> validate_inclusion(:gender, @genders)
+    |> validate_inclusion(:age, @ages)
     |> put_traits(attrs[:traits])
   end
 
