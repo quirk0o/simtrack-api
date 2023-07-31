@@ -6,9 +6,10 @@ defmodule SimTribe.Sims do
   import Ecto.Query, warn: false
   alias SimTribe.Repo
 
-  alias SimTribe.Sims.Sim
+  alias SimTribe.Sims.{Sim, SimTrait}
+  alias SimTribe.Traits.Trait
 
-  def sims_data() do
+  def loader() do
     Dataloader.Ecto.new(Repo, query: fn queryable, _ -> queryable end)
   end
 
@@ -70,6 +71,7 @@ defmodule SimTribe.Sims do
 
   def create_child_sim(parent1, parent2, attrs \\ %{}) do
     child_attrs = Map.merge(%{last_name: parent1.last_name}, attrs)
+
     %Sim{}
     |> Sim.changeset(child_attrs)
     |> Sim.parent_changeset(parent1, parent2)
@@ -109,6 +111,12 @@ defmodule SimTribe.Sims do
       {:error, changeset} ->
         {:error, changeset}
     end
+  end
+
+  def add_sim_trait(%Sim{} = sim, %Trait{} = trait) do
+    %SimTrait{}
+    |> SimTrait.changeset(%{trait_id: trait.id, sim_id: sim.id})
+    |> Repo.insert()
   end
 
   @doc """

@@ -1,4 +1,4 @@
-defmodule SimtribeWeb.SchemaTest do
+defmodule SimTribeWeb.SchemaTest do
   use SimTribeWeb.ConnCase
 
   alias SimTribe.Sims

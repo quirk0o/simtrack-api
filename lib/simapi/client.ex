@@ -2,14 +2,26 @@ defmodule SimApi.Client do
   alias Airtable.Client, as: Airtable
   import SimApi.Helpers
 
-  @tables fetch_tables!()
+  def new() do
+    api_key = Application.fetch_env!(:simtribe, Airtable)[:api_key]
+    base_id = Application.fetch_env!(:simtribe, Airtable)[:base_id]
 
-  @tables
-  |> Enum.each(fn table ->
-    name = Airtable.name_to_atom(table["name"])
+    Airtable.new(api_key, base_id)
+  end
 
-    def unquote(name)() do
-      get_records(unquote(table["name"]))
-    end
-  end)
+  def traits(client) do
+    get_records(client, "Traits")
+  end
+
+  def aspirations(client) do
+    get_records(client, "Aspirations")
+  end
+
+  def careers(client) do
+    get_records(client, "Careers")
+  end
+
+  def skills(client) do
+    get_records(client, "Skills")
+  end
 end

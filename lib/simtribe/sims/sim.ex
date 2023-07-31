@@ -2,7 +2,9 @@ defmodule SimTribe.Sims.Sim do
   use Ecto.Schema
   import Ecto.Changeset
 
-  alias Ecto.Enum
+  alias SimTribe.Sims.SimTrait
+  alias SimTribe.Traits
+  alias SimTribe.Traits.Trait
 
   @required_attrs ~w(first_name last_name gender)a
   @genders ~w(female male)a
@@ -10,8 +12,10 @@ defmodule SimTribe.Sims.Sim do
   schema "sims" do
     field :first_name, :string
     field :last_name, :string
-    field :gender, Enum, values: @genders
+    field :gender, Ecto.Enum, values: @genders
     field :avatar_url, :string
+
+    many_to_many :traits, Trait, join_through: SimTrait, on_replace: :delete
 
     belongs_to :spouse, __MODULE__, on_replace: :nilify
     belongs_to :parent1, __MODULE__, on_replace: :nilify
@@ -34,6 +38,7 @@ defmodule SimTribe.Sims.Sim do
     ])
     |> validate_required(@required_attrs)
     |> validate_inclusion(:gender, @genders)
+    |> put_traits(attrs[:traits])
   end
 
   def spouse_changeset(sim, spouse \\ nil) do
@@ -47,5 +52,12 @@ defmodule SimTribe.Sims.Sim do
     |> change()
     |> put_assoc(:parent1, parent1)
     |> put_assoc(:parent2, parent2)
+  end
+
+  defp put_traits(changeset, nil), do: changeset
+
+  defp put_traits(changeset, trait_names) do
+    traits = Traits.list_traits(filter: %{name: %{in: trait_names}})
+    put_assoc(changeset, :traits, traits)
   end
 end

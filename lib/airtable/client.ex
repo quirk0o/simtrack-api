@@ -1,4 +1,21 @@
 defmodule Airtable.Client do
+  defstruct [:tesla, :base_id]
+
+  def new(api_key, base_id) do
+    Finch.start_link(name: Airtable.Finch)
+
+    middleware = [
+      {Tesla.Middleware.BaseUrl, "https://api.airtable.com/v0"},
+      {Tesla.Middleware.Headers, [{"authorization", "Bearer #{api_key}"}]},
+      Tesla.Middleware.JSON
+    ]
+
+    %__MODULE__{
+      tesla: Tesla.client(middleware, {Tesla.Adapter.Finch, name: Airtable.Finch}),
+      base_id: base_id
+    }
+  end
+
   def name_to_atom(name) do
     name
     |> String.downcase()
@@ -6,34 +23,21 @@ defmodule Airtable.Client do
     |> String.to_atom()
   end
 
-  def list_tables() do
-    client()
-    |> Tesla.get("/meta/bases/#{base_id()}/tables")
+  def list_tables(%__MODULE__{} = client) do
+    client.tesla
+    |> Tesla.get("/meta/bases/#{client.base_id}/tables")
     |> case do
-      {:ok, %Tesla.Env{status: 200, body: body}} -> {:ok, body["tables"]}
+      {:ok, %{status: 200, body: body}} -> {:ok, body["tables"]}
       response -> response
     end
   end
 
-  def list_records(table_name) do
-    client()
-    |> Tesla.get("/#{base_id()}/#{table_name}")
+  def list_records(%__MODULE__{} = client, table_name) do
+    client.tesla
+    |> Tesla.get("/#{client.base_id}/#{table_name}")
     |> case do
-      {:ok, %Tesla.Env{status: 200, body: body}} -> {:ok, body["records"]}
+      {:ok, %{status: 200, body: body}} -> {:ok, body["records"]}
       response -> response
     end
   end
-
-  defp client do
-    middleware = [
-      {Tesla.Middleware.BaseUrl, "https://api.airtable.com/v0"},
-      {Tesla.Middleware.Headers,
-       [{"authorization", "Bearer #{Application.fetch_env!(:simtribe, __MODULE__)[:api_key]}"}]},
-      Tesla.Middleware.JSON
-    ]
-
-    Tesla.client(middleware)
-  end
-
-  defp base_id, do: Application.fetch_env!(:simtribe, __MODULE__)[:base_id]
 end

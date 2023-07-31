@@ -3,7 +3,18 @@ defmodule SimTribeWeb.Schema.SimsContentTypes do
   import Absinthe.Resolution.Helpers, only: [dataloader: 1]
 
   alias SimTribe.Sims.Sim
+  alias SimTribe.Traits.Trait
   alias SimTribeWeb.Resolvers
+
+  enum :life_stage do
+    value :infant
+    value :toddler
+    value :child
+    value :teen
+    value :young_adult
+    value :adult
+    value :elder
+  end
 
   enum :gender do
     value :female
@@ -19,6 +30,7 @@ defmodule SimTribeWeb.Schema.SimsContentTypes do
 
     field :gender, :gender
     field :avatar_url, :string
+    field :traits, list_of(:trait), resolve: dataloader(Trait)
 
     field :parent1, :sim, resolve: dataloader(Sim)
     field :parent2, :sim, resolve: dataloader(Sim)
