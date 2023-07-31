@@ -6,6 +6,7 @@ defmodule SimTribe.Traits do
   import Ecto.Query, warn: false
   alias SimTribe.Repo
 
+  alias SimTribe.Sims.Sim
   alias SimTribe.Traits.{Trait, Conflict}
   import SimTribe.Traits.TraitsQuery
 
@@ -27,13 +28,18 @@ defmodule SimTribe.Traits do
       [%Trait{}, ...]
 
   """
-  @spec list_traits(filter: map()) :: [Trait.t()]
+  @spec list_traits(preload: keyword(), filter: map()) :: [Trait.t()]
   def list_traits(opts \\ []) do
     q =
       default_query()
       |> filter(Keyword.get(opts, :filter, %{}))
+      |> preload(^Keyword.get(opts, :preload, []))
 
     Repo.all(q)
+  end
+
+  def list_compatible_traits(%Sim{} = sim) do
+    default_query() |> compatible(sim) |> Repo.all()
   end
 
   @doc """
@@ -52,7 +58,7 @@ defmodule SimTribe.Traits do
   """
   def get_trait!(id), do: Repo.get!(Trait, id)
 
-  def get_trait_by_external_id(external_id, source),
+  def get_trait_by_external_id(source, external_id),
     do: Repo.get_by(Trait, external_id: external_id, external_source: source)
 
   def get_trait_by_name(name), do: Repo.get_by(default_query(), name: name)
@@ -138,7 +144,7 @@ defmodule SimTribe.Traits do
   end
 
   def upsert_all_traits(trait_attrs) do
-    insert_all_traits(trait_attrs,
+    insert_all(Trait, trait_attrs,
       on_conflict: {:replace, [:name, :type, :description, :img_url, :life_stages, :updated_at]},
       conflict_target: [:external_id, :external_source]
     )
@@ -150,17 +156,24 @@ defmodule SimTribe.Traits do
     |> Repo.insert()
   end
 
-  defp insert_all_traits(trait_attrs, opts \\ []) do
+  def insert_all_trait_conflicts(trait_conflicts) do
+    insert_all(Conflict, trait_conflicts,
+      on_conflict: :nothing,
+      conflict_target: [:trait_id, :conflict_id]
+    )
+  end
+
+  defp insert_all(queryable, attrs, opts) do
     placeholders = %{timestamp: timestamp()}
 
-    traits =
-      trait_attrs
+    records =
+      attrs
       |> Stream.map(&Map.put(&1, :inserted_at, {:placeholder, :timestamp}))
       |> Enum.map(&Map.put(&1, :updated_at, {:placeholder, :timestamp}))
 
     Repo.insert_all(
-      Trait,
-      traits,
+      queryable,
+      records,
       Keyword.merge(opts, placeholders: placeholders, returning: true)
     )
   end

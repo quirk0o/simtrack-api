@@ -10,6 +10,6 @@ defmodule SimTribe.Repo.Migrations.CreateTraitConflicts do
     end
 
     create index(:trait_conflicts, [:trait_id])
-    create index(:trait_conflicts, [:conflict_id])
+    create unique_index(:trait_conflicts, [:trait_id, :conflict_id])
   end
 end

@@ -1,5 +1,8 @@
 defmodule SimTribeWeb.Schema.TraitsContentTypes do
   use Absinthe.Schema.Notation
+  import Absinthe.Resolution.Helpers, only: [dataloader: 1]
+
+  alias SimTribe.Traits.Trait
 
   enum :trait_type do
     value :infant
@@ -25,6 +28,8 @@ defmodule SimTribeWeb.Schema.TraitsContentTypes do
     field :description, :string
     field :img_url, :string
     field :life_stages, list_of(:trait_life_stage)
+
+    field :conflicts, list_of(:trait), resolve: dataloader(Trait)
   end
 
   input_object :trait_filter do
