@@ -135,6 +135,10 @@ defmodule SimTribe.Sims do
     Repo.delete(sim)
   end
 
+  def delete_all_sims do
+    Repo.delete_all(Sim)
+  end
+
   @doc """
   Returns an `%Ecto.Changeset{}` for tracking sim changes.
 

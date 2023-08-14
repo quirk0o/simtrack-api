@@ -1,5 +1,5 @@
 defmodule SimTribe.Sims.Sim do
-  use Ecto.Schema
+  use SimTribe.Schema
   import Ecto.Changeset
 
   alias SimTribe.Sims.SimTrait
@@ -22,6 +22,8 @@ defmodule SimTribe.Sims.Sim do
     belongs_to :spouse, __MODULE__, on_replace: :nilify
     belongs_to :parent1, __MODULE__, on_replace: :nilify
     belongs_to :parent2, __MODULE__, on_replace: :nilify
+
+    many_to_many :legacies, SimTribe.Legacies.Legacy, join_through: "legacy_members", on_replace: :delete
 
     timestamps()
   end

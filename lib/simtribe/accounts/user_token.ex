@@ -1,5 +1,5 @@
 defmodule SimTribe.Accounts.UserToken do
-  use Ecto.Schema
+  use SimTribe.Schema
   import Ecto.Query
   alias SimTribe.Accounts.UserToken
 

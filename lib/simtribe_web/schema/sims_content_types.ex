@@ -1,7 +1,9 @@
 defmodule SimTribeWeb.Schema.SimsContentTypes do
   use Absinthe.Schema.Notation
+  import SimTribeWeb.Schema.Notation
   import Absinthe.Resolution.Helpers, only: [dataloader: 1]
 
+  alias SimTribe.Legacies.Legacy
   alias SimTribe.Sims.Sim
   alias SimTribe.Traits.Trait
   alias SimTribeWeb.Resolvers
@@ -22,18 +24,20 @@ defmodule SimTribeWeb.Schema.SimsContentTypes do
   end
 
   object :sim do
-    field :id, :id
-    field :first_name, :string
-    field :last_name, :string
+    field! :id, :id
+    field! :first_name, :string
+    field! :last_name, :string
 
-    field :name, :string, resolve: &Resolvers.Sims.sim_name/3
+    field! :name, :string, resolve: &Resolvers.Sims.sim_name/3
 
-    field :gender, :gender
+    field! :gender, :gender
     field :avatar_url, :string
-    field :traits, list_of(:trait), resolve: dataloader(Trait)
+    field! :traits, list_of!(:trait), resolve: dataloader(Trait)
 
     field :parent1, :sim, resolve: dataloader(Sim)
     field :parent2, :sim, resolve: dataloader(Sim)
     field :spouse, :sim, resolve: dataloader(Sim)
+
+    field :legacy, :legacy, resolve: dataloader(Legacy)
   end
 end

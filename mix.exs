@@ -33,6 +33,7 @@ defmodule SimTribe.MixProject do
   defp deps do
     [
       {:absinthe, "~> 1.7"},
+      {:absinthe_error_payload, "~> 1.0"},
       {:absinthe_plug, "~> 1.5"},
       {:bcrypt_elixir, "~> 3.0"},
       {:dataloader, "~> 1.0.0"},

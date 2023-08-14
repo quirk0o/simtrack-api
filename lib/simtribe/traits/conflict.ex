@@ -1,5 +1,5 @@
 defmodule SimTribe.Traits.Conflict do
-  use Ecto.Schema
+  use SimTribe.Schema
   import Ecto.Changeset
 
   schema "trait_conflicts" do

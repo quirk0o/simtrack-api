@@ -11,6 +11,13 @@ config :simtribe,
   namespace: SimTribe,
   ecto_repos: [SimTribe.Repo]
 
+config :simtribe, SimTribe.Repo,
+  migration_timestamps: [
+    type: :utc_datetime,
+    inserted_at: :created_at,
+    updated_at: :updated_at
+  ]
+
 # Configures the endpoint
 config :simtribe, SimTribeWeb.Endpoint,
   url: [host: "localhost"],

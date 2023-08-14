@@ -1,5 +1,5 @@
 defmodule SimTribe.Sims.SimTrait do
-  use Ecto.Schema
+  use SimTribe.Schema
   import Ecto.Changeset
 
   schema "sim_traits" do
