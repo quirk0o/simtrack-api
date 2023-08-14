@@ -13,6 +13,11 @@ defmodule SimTribeWeb.Router do
     plug :fetch_current_user
   end
 
+  pipeline :admin do
+    plug :browser
+
+  end
+
   pipeline :api do
     plug :accepts, ["json"]
   end
@@ -87,5 +92,16 @@ defmodule SimTribeWeb.Router do
       live "/users/confirm/:token", UserConfirmationLive, :edit
       live "/users/confirm", UserConfirmationInstructionsLive, :new
     end
+  end
+
+  scope "/admin", SimTribeWeb.Admin do
+    pipe_through [:admin]
+
+    live "/traits", TraitLive.Index, :index
+    live "/traits/new", TraitLive.Index, :new
+    live "/traits/:id/edit", TraitLive.Index, :edit
+
+    live "/traits/:id", TraitLive.Show, :show
+    live "/traits/:id/show/edit", TraitLive.Show, :edit
   end
 end

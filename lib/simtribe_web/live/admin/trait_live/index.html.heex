@@ -1,0 +1,48 @@
+<.header>
+  Listing Traits
+  <:actions>
+    <.link patch={~p"/admin/traits/new"}>
+      <.button>New Trait</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.table
+  id="traits"
+  rows={@streams.traits}
+  row_click={fn {_id, trait} -> JS.navigate(~p"/admin/traits/#{trait}") end}
+>
+  <:col :let={{_id, trait}} label="Name"><%= trait.name %></:col>
+  <:col :let={{_id, trait}} label="Type"><%= trait.type %></:col>
+  <:col :let={{_id, trait}} label="Description"><%= trait.description %></:col>
+  <:col :let={{_id, trait}} label="Image"><img src={trait.img_url} /></:col>
+  <:col :let={{_id, trait}} label="Life stages"><%= Enum.map(trait.life_stages, &to_string/1) %></:col>
+  <:col :let={{_id, trait}} label="External"><%= trait.external_id %></:col>
+  <:col :let={{_id, trait}} label="External source"><%= trait.external_source %></:col>
+  <:col :let={{_id, trait}} label="Archived"><%= trait.archived %></:col>
+  <:action :let={{_id, trait}}>
+    <div class="sr-only">
+      <.link navigate={~p"/admin/traits/#{trait}"}>Show</.link>
+    </div>
+    <.link patch={~p"/admin/traits/#{trait}/edit"}>Edit</.link>
+  </:action>
+  <:action :let={{id, trait}}>
+    <.link
+      phx-click={JS.push("delete", value: %{id: trait.id}) |> hide("##{id}")}
+      data-confirm="Are you sure?"
+    >
+      Delete
+    </.link>
+  </:action>
+</.table>
+
+<.modal :if={@live_action in [:new, :edit]} id="trait-modal" show on_cancel={JS.patch(~p"/admin/traits")}>
+  <.live_component
+    module={SimTribeWeb.Admin.TraitLive.FormComponent}
+    id={@trait.id || :new}
+    title={@page_title}
+    action={@live_action}
+    trait={@trait}
+    patch={~p"/admin/traits"}
+  />
+</.modal>

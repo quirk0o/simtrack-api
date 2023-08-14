@@ -1,0 +1,33 @@
+<.header>
+  Trait <%= @trait.id %>
+  <:subtitle>This is a trait record from your database.</:subtitle>
+  <:actions>
+    <.link patch={~p"/admin/traits/#{@trait}/show/edit"} phx-click={JS.push_focus()}>
+      <.button>Edit trait</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.list>
+  <:item title="Name"><%= @trait.name %></:item>
+  <:item title="Type"><%= @trait.type %></:item>
+  <:item title="Description"><%= @trait.description %></:item>
+  <:item title="Img url"><%= @trait.img_url %></:item>
+  <:item title="Life stages"><%= Enum.map(@trait.life_stages, &to_string/1) %></:item>
+  <:item title="External"><%= @trait.external_id %></:item>
+  <:item title="External source"><%= @trait.external_source %></:item>
+  <:item title="Archived"><%= @trait.archived %></:item>
+</.list>
+
+<.back navigate={~p"/admin/traits"}>Back to traits</.back>
+
+<.modal :if={@live_action == :edit} id="trait-modal" show on_cancel={JS.patch(~p"/admin/traits/#{@trait}")}>
+  <.live_component
+    module={SimTribeWeb.Admin.TraitLive.FormComponent}
+    id={@trait.id}
+    title={@page_title}
+    action={@live_action}
+    trait={@trait}
+    patch={~p"/admin/traits/#{@trait}"}
+  />
+</.modal>

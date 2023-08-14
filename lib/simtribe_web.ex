@@ -19,7 +19,7 @@ defmodule SimTribeWeb do
 
   def static_paths, do: ~w(assets fonts images favicon.ico robots.txt)
 
-  def router do
+  def router(_opts \\ []) do
     quote do
       use Phoenix.Router, helpers: false
 
@@ -30,13 +30,13 @@ defmodule SimTribeWeb do
     end
   end
 
-  def channel do
+  def channel(_opts \\ []) do
     quote do
       use Phoenix.Channel
     end
   end
 
-  def controller do
+  def controller(_opts \\ []) do
     quote do
       use Phoenix.Controller,
         formats: [:html, :json],
@@ -49,16 +49,19 @@ defmodule SimTribeWeb do
     end
   end
 
-  def live_view do
+  def live_view(opts \\ []) do
     quote do
       use Phoenix.LiveView,
-        layout: {SimTribeWeb.Layouts, :app}
+          Keyword.merge(
+            [layout: {SimTribeWeb.Layouts, :app}],
+            unquote(opts)
+          )
 
       unquote(html_helpers())
     end
   end
 
-  def live_component do
+  def live_component(_opts \\ []) do
     quote do
       use Phoenix.LiveComponent
 
@@ -66,7 +69,7 @@ defmodule SimTribeWeb do
     end
   end
 
-  def html do
+  def html(_opts \\ []) do
     quote do
       use Phoenix.Component
 
@@ -109,5 +112,8 @@ defmodule SimTribeWeb do
   """
   defmacro __using__(which) when is_atom(which) do
     apply(__MODULE__, which, [])
+  end
+  defmacro __using__(opts) when is_list(opts) do
+    apply(__MODULE__, opts[:type], [opts])
   end
 end
